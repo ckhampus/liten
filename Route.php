@@ -48,6 +48,7 @@ class Route {
         // Convert wild-cards to regular expressions.
         foreach ($exp as $key => $value) {
             $this->regexp = preg_replace($key, $value, $this->regexp);
+            //$this->regexp = '/^'.$this->regexp.'$/';
         }
     }
     
@@ -61,7 +62,7 @@ class Route {
         if ($regexp) {
             return $this->regexp;
         }
-        return $this->url;
+        return $this->uri;
     }
     
     /**
@@ -79,6 +80,6 @@ class Route {
      * @return array
      */
     public function getCallbacks() {
-        return $this->callback;
+        return $this->callbacks;
     }
 }

@@ -1,8 +1,11 @@
 <?php
-require_once('Url.php');
-require_once('Router.php');
-require_once('Request.php');
+require_once('Core.php');
 require_once('Query.php');
+require_once('Request.php');
+require_once('Route.php');
+require_once('RouteCollection.php');
+require_once('Router.php');
+require_once('Url.php');
 
 /**
  * Liten 
@@ -17,7 +20,10 @@ final class Liten {
     private static $instance;
 
     private function __construct() {
-        $this->router = Router::instance();
+        // Initialize the Core.
+        $core = new Core();
+        $this->routes = $core->getRouteCollection();
+        $this->router = $core->getRouter();
     }
 
     private function init() {
@@ -30,7 +36,9 @@ final class Liten {
     
     // Properties
     
-    private $router;
+    private $core   = NULL;
+    private $routes = NULL;
+    private $router = NULL;
     
     // Methods
     
@@ -42,8 +50,7 @@ final class Liten {
      * @param callback $callbacks
      */
     public static function get($route, $callbacks) {
-        $router = self::init()->router;
-        $router->addRoute($route, 'GET', $callbacks);
+        self::init()->routes[] = new Route($route, 'GET', $callbacks);
     }
 
     /**
@@ -54,8 +61,7 @@ final class Liten {
      * @param callback $callbacks
      */
     public static function post($route, $callbacks) {
-        $router = self::init()->router;
-        $router->addRoute($route, 'POST', $callbacks);
+        self::init()->routes[] = new Route($route, 'POST', $callbacks);
     }
 
     /**
@@ -66,8 +72,7 @@ final class Liten {
      * @param callback $callbacks
      */
     public static function put($route, $callbacks) {
-        $router = self::init()->router;
-        $router->addRoute($route, 'PUT', $callbacks);
+        self::init()->routes[] = new Route($route, 'PUT', $callbacks);
     }
 
     /**
@@ -78,8 +83,7 @@ final class Liten {
      * @param callback $callbacks
      */
     public static function delete($route, $callbacks) {
-        $router = self::init()->router;
-        $router->addRoute($route, 'DELETE', $callbacks);
+        self::init()->routes[] = new Route($route, 'DELETE', $callbacks);
     }
     
     /**
@@ -88,7 +92,40 @@ final class Liten {
      * @return void
      */
     public static function run() {
-        $router = self::init()->router;
-        $router->execute();
+        self::init()->router->execute();
+    }
+}
+
+/**
+ * Returns the currents script filename only. 
+ * 
+ * @return string
+ */
+if(!function_exists('get_script_name')) {
+    function get_script_name() {
+        $string = $_SERVER['SCRIPT_NAME'];
+        $string = substr($string, strripos('/', $string));
+        
+        return $string;
+    }
+}
+
+/**
+ * Get the current URL. 
+ * 
+ * @return string
+ */
+if(!function_exists('get_current_url')) {
+    function get_current_url() {
+        $url = 'http';
+
+        if (isset($_SERVER['HTTPS'])) {
+            $url .= 's';
+        }
+        
+        $url .= '://'.$_SERVER['SERVER_NAME'];
+        $url .= $_SERVER['REQUEST_URI'];
+        
+        return $url;
     }
 }

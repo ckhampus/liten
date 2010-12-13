@@ -20,8 +20,8 @@ class Url {
      * @param string $url 
      */
     public function __construct($url = NULL) {
-        if(!isset($url)) {
-            $url = $this->get_current_url();
+        if(is_null($url)) {
+            $url = get_current_url();
         }
     
         if (!filter_var($url, FILTER_VALIDATE_URL, array(FILTER_FLAG_SCHEME_REQUIRED, FILTER_FLAG_HOST_REQUIRED))) {
@@ -79,24 +79,6 @@ class Url {
     public function getQueryString()
     {
         return $this->query;
-    }
-    
-    /**
-     * Get the current URL. 
-     * 
-     * @return string
-     */
-    protected function get_current_url() {
-        $url = 'http';
-
-        if (isset($_SERVER['HTTPS'])) {
-            $url .= 's';
-        }
-        
-        $url .= '://'.$_SERVER['SERVER_NAME'];
-        $url .= $_SERVER['REQUEST_URI'];
-        
-        return $url;
     }
 }
 
