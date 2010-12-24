@@ -9,10 +9,10 @@
  * @license http://ez.no/licenses/new_bsd New BSD License
  */
 class Url {
-    private $scheme;
-    private $host;
-    private $path;
-    private $query;
+    protected $scheme;
+    protected $host;
+    protected $path;
+    protected $query;
     
     /**
      * Creates a new URL instance.
@@ -20,7 +20,7 @@ class Url {
      * @param string $url 
      */
     public function __construct($url = NULL) {
-        if(is_null($url)) {
+        if (is_null($url)) {
             $url = get_current_url();
         }
     
@@ -37,7 +37,7 @@ class Url {
         }
         
         if (isset($url['query'])) {
-            $this->query = new Query();
+            $this->query = new Query($url['query']);
         }
     }
     

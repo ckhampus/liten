@@ -39,7 +39,8 @@ class Route {
         }
         
         // Normalize the URI.
-        $this->uri = '/'.trim($uri, '/');
+        //$this->uri = '/'.trim($uri, '/');
+        $this->uri = $uri;
         
         $this->method = $method;
         
