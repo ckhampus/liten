@@ -1,9 +1,6 @@
 <?php
-spl_autoload_register(function($class){
-    $file = "{$class}.php";
-    
-    require_once($file);
-}); 
+require_once('Autoloader.php');
+Autoloader::register();
 
 /**
  * Liten 
@@ -21,17 +18,19 @@ final class Liten {
         // Initialize the Core.
         $core = new Core(array(
              // General application settings.
-            'base_url'              => 'http://localhost',
+            'base_url'              => get_script_path(),
             'cache'                 => FALSE,
             // File extension settings
             'file_extension'        => '.html',
             'use_file_extensions'   => TRUE,
             // Directory settings
-            'cache_dir'             => './cache',
-            'include_dir'           => './includes',
-            'css_dir'               => './css',
-            'js_dir'                => './js',
-            'view_dir'              => './views'
+            'cache_dir'             => __DIR__.'/cache',
+            'lib_dir'               => __DIR__.'/lib',
+            'view_dir'              => __DIR__.'/views',
+            'tmp_dir'               => __DIR__.'/templates',
+            // Web directory settings
+            'css_dir'               => '/css',
+            'js_dir'                => '/js',
         ));
         
         $this->settings = $core->getSettings();
@@ -52,6 +51,7 @@ final class Liten {
     private $settings = NULL;
     private $routes = NULL;
     private $router = NULL;
+    private $twig = NULL;
     private $http_status_codes = array(
         // 1xx (Provisional response)
         //
@@ -168,30 +168,16 @@ final class Liten {
      * @return void
      */
     public static function run() {
-        ob_start();
+        $loader = new Twig_Loader_Filesystem(Liten::config('tmp_dir'));
+        self::init()->twig = new Twig_Environment($loader, array(
+          'cache' => Liten::config('cache_dir'),
+          'auto_reload' => TRUE
+        ));
         
         if (!self::init()->router->execute()) {
-            //self::response('404');
+        
+            self::response('404');
         }
-        
-        $output = ob_get_clean();
-        
-        /*
-        $html = new DOMDocument();
-        $html->loadHtml($output);
-        
-        $xpath = new DOMXPath($html);
-        
-        $result = $xpath->query('//title')->item(0);
-        
-        if (empty($result->nodeValue)) {
-            $result->nodeValue = 'Liten Framework';
-        }
-        
-        $output = $html->saveHtml();
-        */
-        
-        echo $output;
     }
     
     /**
@@ -253,6 +239,20 @@ final class Liten {
         unset($liten->temp);
     }
     
+    public static function loadTemplate($template) {
+        self::init()->twig_template = self::init()->twig->loadTemplate($template);
+    }
+    
+    public static function display($data) {
+        $data['base_url'] = get_script_path();
+    
+        self::init()->twig_template->display($data);
+    }
+    
+    public static function getTwig() {
+        return self::init()->twig;
+    }
+    
     /**
      * Sends the header with th specified HTTP status code.
      *
@@ -266,69 +266,5 @@ final class Liten {
                 header('HTTP/1.1 '.$status.' '.$liten->http_status_codes[$status]);
             }
         }
-    }
-}
-
-/**
- * Returns the currents script filename only. 
- * 
- * @return string
- */
-if(!function_exists('get_script_name')) {
-    function get_script_name() {
-        $string = $_SERVER['SCRIPT_NAME'];
-        $string = substr($string, strripos($string, '/')+1);
-        
-        return $string;
-    }
-}
-
-/**
- * Get the current URL. 
- * 
- * @return string
- */
-if(!function_exists('get_current_url')) {
-    function get_current_url() {
-        $url = 'http';
-
-        if (isset($_SERVER['HTTPS'])) {
-            $url .= 's';
-        }
-        
-        $url .= '://'.$_SERVER['SERVER_NAME'];
-        $url .= $_SERVER['REQUEST_URI'];
-        
-        return $url;
-    }
-}
-
-if(!function_exists('stylesheet_url')) {
-    function stylesheet_url() {
-        $url = 'http';
-        $url .= '://'.Liten::config('base_url');
-        $url .= $_SERVER['REQUEST_URI'];
-        
-        return $url;
-    }
-}
-
-/**
- * Get the current URL. 
- * 
- * @return string
- */
-if(!function_exists('get_script_url')) {
-    function get_script_url() {
-        $url = 'http';
-
-        if (isset($_SERVER['HTTPS'])) {
-            $url .= 's';
-        }
-        
-        $url .= '://'.$_SERVER['SERVER_NAME'];
-        $url .= $_SERVER['SCRIPT_NAME'];
-        
-        return $url;
     }
 }
