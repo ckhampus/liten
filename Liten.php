@@ -1,5 +1,5 @@
 <?php
-require_once('Autoloader.php');
+require_once('core/Autoloader.php');
 Autoloader::register();
 
 /**
@@ -34,8 +34,8 @@ final class Liten {
         ));
         
         $this->settings = $core->getSettings();
-        $this->routes = $core->getRouteCollection();
-        $this->router = $core->getRouter();
+        $this->routes   = $core->getRouteCollection();
+        $this->router   = $core->getRouter();
     }
 
     private static function init() {
@@ -52,6 +52,7 @@ final class Liten {
     private $routes = NULL;
     private $router = NULL;
     private $twig = NULL;
+    private $core = NULL;
     private $http_status_codes = array(
         // 1xx (Provisional response)
         //
@@ -167,16 +168,12 @@ final class Liten {
      * 
      * @return void
      */
-    public static function run() {
-        $loader = new Twig_Loader_Filesystem(Liten::config('tmp_dir'));
-        self::init()->twig = new Twig_Environment($loader, array(
-          'cache' => Liten::config('cache_dir'),
-          'auto_reload' => TRUE
-        ));
-        
+    public static function run() {        
+        $core = new Core();
+        self::init()->twig = $core->getTwig();
+    
         if (!self::init()->router->execute()) {
-        
-            self::response('404');
+            //self::response('404');
         }
     }
     
@@ -216,27 +213,6 @@ final class Liten {
         }
         
         return FALSE;
-    }
-    
-    public static function render($view, $data = NULL) {
-        $liten = self::init();
-        
-        $liten->temp = array();
-        $liten->temp['view'] = $view;
-        $liten->temp['data'] = $data;
-        unset($view, $data);
-    
-        if (strpos($liten->temp['view'], '.php') === FALSE) {
-            $liten->temp['view'] .= '.php';
-        }
-        
-        if (is_array($liten->temp['data'])) {
-            extract($liten->temp['data']);
-        }
-        
-        include_once($liten->settings['view_dir'].DIRECTORY_SEPARATOR.$liten->temp['view']);
-        
-        unset($liten->temp);
     }
     
     public static function loadTemplate($template) {

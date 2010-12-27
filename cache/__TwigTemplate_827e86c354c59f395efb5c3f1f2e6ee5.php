@@ -34,23 +34,21 @@ class __TwigTemplate_827e86c354c59f395efb5c3f1f2e6ee5 extends Twig_Template
     public function block_content($context, array $blocks = array())
     {
         // line 4
-        echo "
-    ";
-        // line 5
+        echo "    ";
         $context['_parent'] = (array) $context;
         $context['_seq'] = twig_ensure_traversable((isset($context['posts']) ? $context['posts'] : null));
         foreach ($context['_seq'] as $context['_key'] => $context['post']) {
-            // line 6
+            // line 5
             echo "    <article id=\"post-0\">
         <header>
             <time pubdate datetime=\"";
-            // line 8
+            // line 7
             echo twig_escape_filter($this->env, twig_date_format_filter($this->getAttribute($this->getAttribute((isset($context['post']) ? $context['post'] : null), "date", array(), "any"), "sec", array(), "any"), "Y-m-d"), "html");
             echo "\">";
             echo twig_escape_filter($this->env, twig_date_format_filter($this->getAttribute($this->getAttribute((isset($context['post']) ? $context['post'] : null), "date", array(), "any"), "sec", array(), "any"), "F j, Y"), "html");
             echo "</time>
             <h1><a href=\"";
-            // line 9
+            // line 8
             echo twig_escape_filter($this->env, (isset($context['base_url']) ? $context['base_url'] : null), "html");
             echo "/";
             echo twig_escape_filter($this->env, $this->getAttribute((isset($context['post']) ? $context['post'] : null), "slug", array(), "any"), "html");
@@ -61,12 +59,12 @@ class __TwigTemplate_827e86c354c59f395efb5c3f1f2e6ee5 extends Twig_Template
             echo "</a></h1>
         </header>
         ";
-            // line 11
+            // line 10
             echo $this->getAttribute((isset($context['post']) ? $context['post'] : null), "content", array(), "any");
             echo "
         <footer>
             <p><a href=\"";
-            // line 13
+            // line 12
             echo twig_escape_filter($this->env, (isset($context['base_url']) ? $context['base_url'] : null), "html");
             echo "/";
             echo twig_escape_filter($this->env, $this->getAttribute((isset($context['post']) ? $context['post'] : null), "slug", array(), "any"), "html");
@@ -80,17 +78,17 @@ class __TwigTemplate_827e86c354c59f395efb5c3f1f2e6ee5 extends Twig_Template
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['post'], $context['_parent'], $context['loop']);
         $context = array_merge($_parent, array_intersect_key($context, $_parent));
-        // line 17
+        // line 16
         echo "
     <div id=\"archive\">
         <h3>Older posts</h3>
         <ul>
             ";
-        // line 21
+        // line 20
         $context['_parent'] = (array) $context;
         $context['_seq'] = twig_ensure_traversable((isset($context['posts']) ? $context['posts'] : null));
         foreach ($context['_seq'] as $context['_key'] => $context['post']) {
-            // line 22
+            // line 21
             echo "                <li><a href=\"";
             echo twig_escape_filter($this->env, (isset($context['base_url']) ? $context['base_url'] : null), "html");
             echo "/";
@@ -103,10 +101,9 @@ class __TwigTemplate_827e86c354c59f395efb5c3f1f2e6ee5 extends Twig_Template
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['post'], $context['_parent'], $context['loop']);
         $context = array_merge($_parent, array_intersect_key($context, $_parent));
-        // line 24
+        // line 23
         echo "        </ul>
     </div>
-
 ";
     }
 

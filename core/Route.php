@@ -25,7 +25,7 @@ class Route {
         // Array containing all the regular
         // expressions to search and replace for.
         $exp = array(
-            '/:[a-zA-Z_][a-zA-Z0-9_]*/' => '[\w]+',
+            '/:[a-zA-Z_][a-zA-Z0-9_]*/' => '[\w-]+',
             '/\*/' => '.+'
         );
     

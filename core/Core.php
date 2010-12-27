@@ -33,6 +33,21 @@ class Core {
         
         return self::$objects['router'] = new Router($this->getRouteCollection(), $this->getSettings());
     }
+    
+    public function getTwig() {
+        
+        if (isset(self::$objects['twig'])) {
+            return self::$objects['twig'];
+        }
+        
+        $settings = $this->getSettings();
+        
+        $loader = new Twig_Loader_Filesystem($settings['tmp_dir']);
+        return self::$objects['twig'] = new Twig_Environment($loader, array(
+          'cache' => $settings['cache_dir'],
+          'auto_reload' => !$settings['cache']
+        ));
+    }
 }
 
 

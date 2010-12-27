@@ -17,8 +17,8 @@ class Autoloader {
         if (0 !== strpos($class, 'Twig')) {
             return FALSE;
         }
-
-        $file = Liten::config('lib_dir').'/'.str_replace('_', '/', $class).'.php';
+        
+        $file = __DIR__.'/lib/'.str_replace('_', '/', $class).'.php';
         
         include_once($file);
 
