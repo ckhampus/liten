@@ -1,4 +1,6 @@
 <?php
+define('BASE_PATH', __DIR__);
+
 require_once('core/Autoloader.php');
 Autoloader::register();
 
@@ -24,10 +26,10 @@ final class Liten {
             'file_extension'        => '.html',
             'use_file_extensions'   => TRUE,
             // Directory settings
-            'cache_dir'             => __DIR__.'/cache',
-            'lib_dir'               => __DIR__.'/lib',
-            'view_dir'              => __DIR__.'/views',
-            'tmp_dir'               => __DIR__.'/templates',
+            'cache_dir'             => BASE_PATH.'/cache',
+            'lib_dir'               => BASE_PATH.'/lib',
+            'view_dir'              => BASE_PATH.'/views',
+            'tmp_dir'               => BASE_PATH.'/templates',
             // Web directory settings
             'css_dir'               => '/css',
             'js_dir'                => '/js',
@@ -38,6 +40,11 @@ final class Liten {
         $this->router   = $core->getRouter();
     }
 
+    /**
+     * init 
+     * 
+     * @return void
+     */
     private static function init() {
         if (!isset(self::$instance)) {
             self::$instance = new self;
@@ -164,9 +171,7 @@ final class Liten {
     }
     
     /**
-     * run 
-     * 
-     * @return void
+     * Start the framework.
      */
     public static function run() {        
         $core = new Core();
@@ -215,18 +220,25 @@ final class Liten {
         return FALSE;
     }
     
+    /**
+     * Load the template to use. 
+     * 
+     * @param string $template
+     */
     public static function loadTemplate($template) {
-        self::init()->twig_template = self::init()->twig->loadTemplate($template);
+        self::init()->twig->loadTemplate($template);
     }
     
+    /**
+     * Renders the template file.
+     * 
+     * @param mixed $data 
+     * @return void
+     */
     public static function display($data) {
         $data['base_url'] = get_script_path();
     
-        self::init()->twig_template->display($data);
-    }
-    
-    public static function getTwig() {
-        return self::init()->twig;
+        self::init()->twig->display($data);
     }
     
     /**

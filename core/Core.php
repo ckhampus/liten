@@ -1,15 +1,35 @@
 <?php
 
+/**
+ * Core 
+ * 
+ * @package Webdav
+ * @version //autogen//
+ * @copyright Copyright (C) 2005-2007 eZ systems as. All rights reserved.
+ * @author  
+ * @license http://ez.no/licenses/new_bsd New BSD License
+ */
 class Core {
     protected static $objects = array();
     protected $parameters = array();
     
+    /**
+     * __construct 
+     * 
+     * @param array $parameters 
+     * @return void
+     */
     public function __construct(array $parameters = NULL) {
         if (!is_null($parameters)) {
             $this->parameters = $parameters;
         }
     }
     
+    /**
+     * Return the Settings object. 
+     * 
+     * @return Settings
+     */
     public function getSettings() {
         if (isset(self::$objects['settings'])) {
             return self::$objects['settings'];
@@ -18,6 +38,11 @@ class Core {
         return self::$objects['settings'] = new Settings($this->parameters); 
     }
     
+    /**
+     * Return the RouteCollection object. 
+     * 
+     * @return RouteCollection
+     */
     public function getRouteCollection() {
         if (isset(self::$objects['routes'])) {
             return self::$objects['routes'];
@@ -26,6 +51,11 @@ class Core {
         return self::$objects['routes'] = new RouteCollection(); 
     }
     
+    /**
+     * Return the Router object.
+     * 
+     * @return Router
+     */
     public function getRouter() {
         if (isset(self::$objects['router'])) {
             return self::$objects['router'];
@@ -34,19 +64,18 @@ class Core {
         return self::$objects['router'] = new Router($this->getRouteCollection(), $this->getSettings());
     }
     
+    /**
+     * Return the Twig object.
+     * 
+     * @return Twig
+     */
     public function getTwig() {
         
         if (isset(self::$objects['twig'])) {
             return self::$objects['twig'];
         }
         
-        $settings = $this->getSettings();
-        
-        $loader = new Twig_Loader_Filesystem($settings['tmp_dir']);
-        return self::$objects['twig'] = new Twig_Environment($loader, array(
-          'cache' => $settings['cache_dir'],
-          'auto_reload' => !$settings['cache']
-        ));
+        return self::$objects['twig'] = new Twig($this->getSettings());
     }
 }
 
